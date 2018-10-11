@@ -13,6 +13,23 @@ const initialGameBoard = [
   ['', '', ''],
 ];
 
+const fillCells = (game, config = {}) => {
+  const { x = -1, y = -1 } = config;
+
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      if (i !== x || j !== y) game.acceptUserMove(i, j);
+    }
+  }
+};
+
+const count = (arr, symbol) =>
+  arr.reduce((result, row) => {
+    return row.reduce((count, el) => {
+      return el === symbol ? ++count : count
+    }, result)
+  }, 0)
+
 let game;
 beforeEach(() => { game = new Game(); });
 
@@ -84,5 +101,23 @@ describe('Game', () => {
 
     expect(board[1][1]).to.equal(computerMoveSymbol);
     stub.restore();
+  });
+
+  it('Компьютер ходит в ячейку которая не занята', () => {
+    fillCells(game, { x: 2, y: 2 });
+
+    game.createComputerMove();
+    const board = game.getState();
+
+    expect(count(board, userMoveSymbol)).to.equal(8);
+    expect(count(board, computerMoveSymbol)).to.equal(1);
+    expect(board[2][2]).to.equal(computerMoveSymbol);
+  });
+
+  it('Если не осталось доступных ходов для компьютера, то выбрасываем исключение', () => {
+    fillCells(game);
+
+    const func = game.createComputerMove.bind(game);
+    expect(func).to.throw('Нет доступных ячеек');
   });
 });

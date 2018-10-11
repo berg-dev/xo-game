@@ -28,13 +28,16 @@ export default class Game {
   }
 
   createComputerMove() {
-    const x = this._getRandomCoordinate();
-    const y = this._getRandomCoordinate();
+    if (this._getFreeCellsCount() === 0) {
+      return this._throwException('Нет доступных ячеек');
+    }
+    const [x, y] = this._getFreeRandomCoordinates();
 
     this._updateHistory(this._computerName, x, y);
     this._updateBoard(x, y, {
       symbol: this._computerMoveSymbol,
     });
+    return false;
   }
 
   getMoveHistory() {
@@ -60,5 +63,23 @@ export default class Game {
 
   _throwException(msg) {
     throw new Error(msg);
+  }
+
+  _getFreeRandomCoordinates() {
+    let x = this._getRandomCoordinate();
+    let y = this._getRandomCoordinate();
+
+    while (!!this._board[x][y]) {
+      x = this._getRandomCoordinate();
+      y = this._getRandomCoordinate();
+    }
+
+    return [x, y];
+  }
+
+  _getFreeCellsCount() {
+    return this._board.reduce((total, row) =>
+      row.reduce((count, el) =>
+        el === '' ? ++count : count, total), 0);
   }
 }
