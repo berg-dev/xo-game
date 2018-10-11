@@ -68,18 +68,20 @@ export default class Game {
   _getFreeRandomCoordinates() {
     let x = this._getRandomCoordinate();
     let y = this._getRandomCoordinate();
+    let freeCells = !!this._board[x][y];
 
-    while (!!this._board[x][y]) {
+    while (freeCells) {
       x = this._getRandomCoordinate();
       y = this._getRandomCoordinate();
+      freeCells = !!this._board[x][y];
     }
 
     return [x, y];
   }
 
   _getFreeCellsCount() {
-    return this._board.reduce((total, row) =>
-      row.reduce((count, el) =>
-        el === '' ? ++count : count, total), 0);
+    return this._board.reduce((total, row) => (
+      row.reduce((count, el) => (el === '' ? count + 1 : count), total)
+    ), 0);
   }
 }

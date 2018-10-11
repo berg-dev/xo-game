@@ -16,19 +16,18 @@ const initialGameBoard = [
 const fillCells = (game, config = {}) => {
   const { x = -1, y = -1 } = config;
 
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
+  for (let i = 0; i < 3; i += 1) {
+    for (let j = 0; j < 3; j += 1) {
       if (i !== x || j !== y) game.acceptUserMove(i, j);
     }
   }
 };
 
-const count = (arr, symbol) =>
-  arr.reduce((result, row) => {
-    return row.reduce((count, el) => {
-      return el === symbol ? ++count : count
-    }, result)
-  }, 0)
+const count = (arr, symbol) => (
+  arr.reduce((result, row) => (
+    row.reduce((countN, el) => (el === symbol ? countN + 1 : countN), result)
+  ), 0)
+);
 
 let game;
 beforeEach(() => { game = new Game(); });
