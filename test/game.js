@@ -1,25 +1,20 @@
 import { expect } from 'chai';
-import { describe, it } from 'mocha';
+import { describe, it, beforeEach } from 'mocha';
+import Game from '../src/Game';
 
-class Game {
-  constructor() {
-    this.state = null;
-  }
+const initialGameBoard = [
+  ['', '', ''],
+  ['', '', ''],
+  ['', '', ''],
+];
 
-  getState() {
-    return this.state;
-  }
-}
+let game;
+beforeEach(() => { game = new Game(); });
 
 describe('Game', () => {
-  it('Should return empty game board', () => {
-    const game = new Game();
+  it('Должен возвращать пустую игровую доску', () => {
     const board = game.getState();
 
-    expect(board).to.deep.equal([
-      ['', '', ''],
-      ['', '', ''],
-      ['', '', ''],
-    ]);
+    expect(board).to.deep.equal(initialGameBoard);
   });
 });
