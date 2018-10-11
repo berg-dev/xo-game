@@ -1,8 +1,12 @@
 import { expect } from 'chai';
 import { describe, it, beforeEach } from 'mocha';
+import sinon from 'sinon';
 import Game from '../src/Game';
 
+const userName = 'user';
+const computerName = 'computer';
 const userMoveSymbol = '×';
+const computerMoveSymbol = 'o';
 const initialGameBoard = [
   ['', '', ''],
   ['', '', ''],
@@ -39,10 +43,46 @@ describe('Game', () => {
     expect(func).to.throw('ячейка уже занята');
   });
 
-  it('Компьютер ходит в верхнюю левую ячейку', () => {
+  it('Игра сохраняет ходы пользователя в историю', () => {
+    const x = 1;
+    const y = 1;
+
+    game.acceptUserMove(x, y);
+    const history = game.getMoveHistory();
+
+    expect(history).to.deep.equal([{ turn: userName, x, y }]);
+  });
+
+  it('Игра сохраняет ходы компьютера в историю', () => {
+    const stub = sinon.stub(Math, 'random').returns(0.5);
+
+    game.createComputerMove();
+    const history = game.getMoveHistory();
+
+    expect(history).to.deep.equal([{ turn: computerName, x: 1, y: 1 }]);
+    stub.restore();
+  });
+
+  it('Игра последовательно сохраняет 1 ход пользователя и 1 ход компьютера в историю', () => {
+    const x = 1;
+    const y = 1;
+
+    game.acceptUserMove(x, y);
+    game.createComputerMove();
+    const history = game.getMoveHistory();
+
+    expect(history.length).to.equal(2);
+    expect(history[0].turn).to.equal(userName);
+    expect(history[1].turn).to.equal(computerName);
+  });
+
+  it('Компьютер случайно выбирает ячейку для хода', () => {
+    const stub = sinon.stub(Math, 'random').returns(0.5);
+
     game.createComputerMove();
     const board = game.getState();
 
-    expect(board[0][0]).to.equal('o');
+    expect(board[1][1]).to.equal(computerMoveSymbol);
+    stub.restore();
   });
 });
