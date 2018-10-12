@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { describe, it, beforeEach } from 'mocha';
 import sinon from 'sinon';
 import Game from '../src/Game';
+import GameBuilder from './GameBuilder';
 
 const userName = 'user';
 const computerName = 'computer';
@@ -121,11 +122,38 @@ describe('Game', () => {
   });
 
   it('Проверяет если пользователь победил по горизонтали', () => {
-    game.acceptUserMove(0, 0);
-    game.acceptUserMove(0, 1);
-    game.acceptUserMove(0, 2);
-    const userWon = game.isWinner(userName);
+    const gameX = new GameBuilder()
+      .withBoardState(`
+        x x x
+        . . .
+        . . .`)
+      .build();
 
+    const userWon = gameX.isWinner(userName);
+    expect(userWon).to.equal(true);
+  });
+
+  it('Проверяет если пользователь победил по вертикали', () => {
+    const gameX = new GameBuilder()
+      .withBoardState(`
+        . x .
+        . x .
+        . x .`)
+      .build();
+
+    const userWon = gameX.isWinner(userName);
+    expect(userWon).to.equal(true);
+  });
+
+  it('Проверяет если пользователь победил по диагонали', () => {
+    const gameX = new GameBuilder()
+      .withBoardState(`
+        x . .
+        . x .
+        . . x`)
+      .build();
+
+    const userWon = gameX.isWinner(userName);
     expect(userWon).to.equal(true);
   });
 });

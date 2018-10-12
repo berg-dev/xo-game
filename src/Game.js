@@ -53,7 +53,17 @@ export default class Game {
       (isEqual(i, 0) && isEqual(i, 1) && isEqual(i, 2)) || res
     ), false);
 
-    return horizontal;
+    const vertical = range.reduce((res, i) => (
+      (isEqual(0, i) && isEqual(1, i) && isEqual(2, i)) || res
+    ), false);
+
+    const diagonal = (isEqual(0, 0) && isEqual(1, 1) && isEqual(2, 2))
+      || (isEqual(0, 2) && isEqual(1, 1) && isEqual(2, 0));
+
+    return horizontal
+      || vertical
+      || diagonal
+      || false;
   }
 
   _updateBoard(x, y, config = {}) {
