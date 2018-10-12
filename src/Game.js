@@ -44,6 +44,18 @@ export default class Game {
     return this._history;
   }
 
+  isWinner(player) {
+    const symbol = this._getSymbolForPlayer(player);
+    const range = [...Array(this._fieldSize).keys()];
+    const isEqual = this._checkCellEqual(symbol);
+
+    const horizontal = range.reduce((res, i) => (
+      (isEqual(i, 0) && isEqual(i, 1) && isEqual(i, 2)) || res
+    ), false);
+
+    return horizontal;
+  }
+
   _updateBoard(x, y, config = {}) {
     const { symbol = this._userMoveSymbol } = config;
     this._board[x][y] = symbol;
@@ -61,9 +73,11 @@ export default class Game {
     return Math.floor(Math.random() * (this._fieldSize - 0));
   }
 
+  /* eslint-disable */
   _throwException(msg) {
     throw new Error(msg);
   }
+  /* eslint-enable */
 
   _getFreeRandomCoordinates() {
     let x = this._getRandomCoordinate();
@@ -83,5 +97,15 @@ export default class Game {
     return this._board.reduce((total, row) => (
       row.reduce((count, el) => (el === '' ? count + 1 : count), total)
     ), 0);
+  }
+
+  _getSymbolForPlayer(player) {
+    return player === this._userName
+      ? this._userMoveSymbol
+      : this._computerMoveSymbol;
+  }
+
+  _checkCellEqual(symbol) {
+    return (i, j) => this._board[i][j] === symbol;
   }
 }

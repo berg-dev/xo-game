@@ -119,4 +119,13 @@ describe('Game', () => {
     const func = game.createComputerMove.bind(game);
     expect(func).to.throw('Нет доступных ячеек');
   });
+
+  it('Проверяет если пользователь победил по горизонтали', () => {
+    game.acceptUserMove(0, 0);
+    game.acceptUserMove(0, 1);
+    game.acceptUserMove(0, 2);
+    const userWon = game.isWinner(userName);
+
+    expect(userWon).to.equal(true);
+  });
 });
