@@ -14,6 +14,9 @@ const initialGameBoard = [
   ['', '', ''],
 ];
 
+let game;
+beforeEach(() => { game = new Game(); });
+
 const fillCells = (game, config = {}) => {
   const { x = -1, y = -1 } = config;
 
@@ -29,9 +32,6 @@ const count = (arr, symbol) => (
     row.reduce((countN, el) => (el === symbol ? countN + 1 : countN), result)
   ), 0)
 );
-
-let game;
-beforeEach(() => { game = new Game(); });
 
 describe('Game', () => {
   it('Должен возвращать пустую игровую доску', () => {
@@ -155,5 +155,35 @@ describe('Game', () => {
 
     const userWon = gameX.isWinner(userName);
     expect(userWon).to.equal(true);
+  });
+
+  it('Проверяет есть ли победитель', () => {
+    const gameX = new GameBuilder()
+      .withBoardState(`
+        x x x
+        . . .
+        . . .`)
+      .build();
+
+    const state = gameX.checkGame();
+    expect(state).to.equal(`${userName} won!`);
+  });
+
+  it('Проверяет что победителя нет', () => {
+    const gameX = new GameBuilder()
+      .withBoardState(`
+        . x x
+        . . .
+        . . .`)
+      .build();
+
+    const state = gameX.checkGame();
+    expect(state).to.equal('continue');
+  });
+
+  it('Возвращает размер игровой доски', () => {
+    const size = game.getSize();
+
+    expect(size).to.deep.equal(3);
   });
 });
